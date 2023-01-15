@@ -7,6 +7,23 @@ from rest_framework.decorators import api_view
 from .models import Product
 from .serializer import ProductSerializer
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        # Add custom claims
+        data['username'] = self.user.username
+        data['email'] = self.user.email
+        # ...
+
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 # Create your views here.
 
 @api_view(['GET'])
